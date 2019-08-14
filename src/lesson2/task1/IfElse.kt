@@ -62,13 +62,17 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * Мой возраст. Для заданного 0 < n < 200, рассматриваемого как возраст человека,
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
-fun ageDescription(age: Int): String {
-    return when {
-        age / 10 % 10 == 1 -> "$age лет"
-        age % 10 == 1 -> "$age год"
-        age / 10 % 10 == 9 -> "$age лет"
-        else -> "$age года"
+fun ageDescription(age: Int): String? {
+    if (age < 1) return null
+    val lastDigit = age % 10
+    val ageStr = when {
+        age - lastDigit == 10 || age - lastDigit == 110 -> "лет" // 10 - 19 лет || 110 - 119 лет
+        lastDigit == 0 -> "лет"
+        lastDigit == 1 -> "год"
+        lastDigit <= 4 -> "года"
+        else -> "лет"
     }
+    return "$age $ageStr"
 }
 
 /**
@@ -78,9 +82,19 @@ fun ageDescription(age: Int): String {
  * и t3 часов — со скоростью v3 км/час.
  * Определить, за какое время он одолел первую половину пути?
  */
+//http://www.tehnari.ru/f41/t74826/
 fun timeForHalfWay(t1: Double, v1: Double,
                    t2: Double, v2: Double,
-                   t3: Double, v3: Double): Double = TODO()
+                   t3: Double, v3: Double): Double {
+    val s1 = v1 * t1
+    val s2 = v2 * t2
+    val s3 = v3 * t3
+    val s = (s1 + s2 + s3) / 2
+
+    return if (s <= s1) s / v1
+    else if (s > s1 && s <= s1 + s2) t1 + (s - s1) / v2
+    else (s - s1 - s2) / v3
+}
 
 /**
  * Простая
@@ -93,7 +107,12 @@ fun timeForHalfWay(t1: Double, v1: Double,
  */
 fun whichRookThreatens(kingX: Int, kingY: Int,
                        rookX1: Int, rookY1: Int,
-                       rookX2: Int, rookY2: Int): Int = TODO()
+                       rookX2: Int, rookY2: Int): Int {
+    return if ((kingX == rookX1) || (kingY == rookY1) && (kingX == rookX2) || (kingY == rookY2)) 3 //угроза от обеих ладей
+    else if (kingX == rookX1 || kingY == rookY1) 1 //угроза от первой ладьи
+    else if (kingX == rookX2 || kingY == rookY2) 2 //угроза от второй ладьи
+    else 0
+}
 
 /**
  * Простая
